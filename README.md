@@ -22,7 +22,7 @@ You'll also need Visual Studio 2019 with .NET Core 3.0 installed in order to run
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+Use the default "Publish" functionality from Visual Studio to create release binaries.
 
 ## Built With
 
