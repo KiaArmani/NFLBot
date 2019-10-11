@@ -8,8 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-In order to run the Bot, you need to set the following Environment Variables:
+In order to run the Bot, you need to set the following Environment Variables and a MongoDB instance:
 
 ```
 NFLBOT_DISCORDTOKEN: API Token for the Discord Bot Application
