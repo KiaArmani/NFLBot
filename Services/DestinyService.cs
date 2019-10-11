@@ -240,6 +240,20 @@ namespace NFLBot.Services
         }
 
         /// <summary>
+        /// Gets all Ordeal Scores from the Collection, Sorts them Descending, Groups them by Player Name and returns topX amount of them.
+        /// </summary>
+        /// <param name="topX">Amount of scores to return.</param>
+        /// <returns></returns>
+        public List<ScoreEntry> GetTopOrdealScores(int topX)
+        {
+            // Get Current Season scores, sorted by Score, ascending
+            var mongoResult = collection.Find(x => x.ActivityDate >= currentSeasonStart && x.ActivityName.Contains("Ordeal")).ToList();
+
+            // Group by Name, take only the highest score of each player, then only return a List of topX scores.
+            return mongoResult.GroupBy(x => x.AccountId).SelectMany(g => g.Where(p => p.Score == g.Max(h => h.Score))).OrderByDescending(x => x.Score).Take(topX).ToList();
+        }
+
+        /// <summary>
         /// Gets the topX scores of the given location and difficulty.
         /// </summary>
         /// <param name="location">Nightfall Name</param>

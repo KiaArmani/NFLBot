@@ -92,7 +92,7 @@ namespace NFLBot.Modules
                 return;
 
             // Request Scores from Destiny Service
-            var result = DestinyService.GetTopScores(topX);
+            var result = DestinyService.GetTopOrdealScores(topX);
 
             // Build and send Response Table
             await BuildTable(result).ConfigureAwait(false);
