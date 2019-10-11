@@ -15,7 +15,7 @@ In order to run the Bot, you need to set the following Environment Variables:
 NFLBOT_DISCORDTOKEN: API Token for the Discord Bot Application
 NFLBOT_BUNGIETOKEN: API Token for the Bungie Application
 NFLBOT_CLANID: ID of your Destiny Clan
-(Optional) NFLBOT_ATLASTOKEN: If using the Cloud Atlas Connection, the Token for your User.
+NFLBOT_MONGOSTRING: Connection String to connect to your MongoDB instance
 ```
 
 You'll also need Visual Studio 2019 with .NET Core 3.0 installed in order to run the Bot from VS and develop for it.
