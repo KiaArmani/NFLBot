@@ -1,4 +1,6 @@
 # NFLBot
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FKiaArmani%2FNFLBot.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FKiaArmani%2FNFLBot?ref=badge_shield)
+
 
 A Discord Bot that collects Nightfall Activities of your Destiny Clan and providing commands for scoreboards.
 
@@ -47,3 +49,6 @@ See also the list of [contributors](https://github.com/KiaArmani/NFLBot/contribu
 ## License
 
 This project is licensed under the ISC & BSD 3-Clause License - see the [LICENSE.md](LICENSE.md) file for details
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FKiaArmani%2FNFLBot.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FKiaArmani%2FNFLBot?ref=badge_large)
