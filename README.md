@@ -38,7 +38,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Christopher F. <foxbot@protonmail.com>** - *DiscordBotBase* - [foxbot](https://github.com/foxbot/)
+* **Christopher F.** - *DiscordBotBase* - [foxbot](https://github.com/foxbot/)
 * **Benn Benson** - *MadReflection.BungieNetApi* - [madreflection](https://github.com/madreflection/)
 * **Kia Armani** - *NFLBot* - [KiaArmani](https://github.com/KiaArmani/)
 
