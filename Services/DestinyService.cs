@@ -73,9 +73,9 @@ namespace NFLBot.Services
         private void InitializeMongoDatabase()
         {
             WriteLog(LogSeverity.Info, "Initializing Cloud Atlas Connection..");
-            var atlasToken = Environment.GetEnvironmentVariable("NFLBOT_ATLASTOKEN");
-            mongoClient = new MongoClient($"mongodb+srv://nflbot:{atlasToken}@d2tools-intaa.mongodb.net/admin?retryWrites=true&w=majority");
-            WriteLog(LogSeverity.Info, "Cloud Atlas Connection established!");
+            var mongoConnectionString = Environment.GetEnvironmentVariable("NFLBOT_MONGOSTRING");
+            mongoClient = new MongoClient(mongoConnectionString);
+            WriteLog(LogSeverity.Info, "MongoDB Connection established!");
 
             WriteLog(LogSeverity.Info, "Loading Collection..");
             var database = mongoClient.GetDatabase("d2tools");
