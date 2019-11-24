@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <UserSecretsId>e787c15a-61fa-4b91-ad8f-58994b74f024</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
+    <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference
+      Include="..\..\Libraries\MadReflection.BungieApi\MadReflection.BungieNetApi.Entities\MadReflection.BungieNetApi.Entities.csproj" />
+    <ProjectReference Include="..\..\Libraries\XurClassLibrary\XurClassLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

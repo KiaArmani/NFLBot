@@ -1,0 +1,15 @@
+{
+  "ServerUri": "https://sonarcloud.io/",
+  "Organization": {
+    "Key": "d2tools",
+    "Name": "d2tools"
+  },
+  "ProjectKey": "d2tools_NFLBot",
+  "ProjectName": "NFLBot",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AW280KQ5X1XPIpR_ug-9",
+      "ProfileTimestamp": "2019-10-09T08:14:59+02:00"
+    }
+  }
+}

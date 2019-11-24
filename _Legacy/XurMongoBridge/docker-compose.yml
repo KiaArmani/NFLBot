@@ -1,0 +1,13 @@
+﻿version: "1"
+services:
+    microservice-template:
+      build: .
+      image: "kiaarmani/xurmongobridge"
+      command: --server.urls http://0.0.0.0:5000
+      ports:
+        - "5000:5000"
+      networks:
+        - backend
+
+networks:
+  backend:

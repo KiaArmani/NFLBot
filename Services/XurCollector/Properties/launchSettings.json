@@ -1,0 +1,46 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:60921",
+      "sslPort": 44372
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "weatherforecast",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "XurCollector": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "weatherforecast",
+      "environmentVariables": {
+        "XUR_COLLECTOR_CLANID": "3461885",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "XUR_COLLECTOR_BUNGIETOKEN": "ae4c3925e10e4c5e8e29783fcf6f0223",
+        "XUR_COLLECTOR_MONGOSTRING":
+          "mongodb+srv://nflbot:Uho9ocoQwQuuBZ0n@d2tools-intaa.mongodb.net/admin?retryWrites=true&w=majority"
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "ASPNETCORE_HTTPS_PORT": "44373"
+      },
+      "httpPort": 60922,
+      "useSSL": true,
+      "sslPort": 44373
+    }
+  }
+}

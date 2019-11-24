@@ -1,0 +1,43 @@
+﻿{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://0.0.0.0:5000"
+  },
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/api/Blitz/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5010
+        }
+      ],
+      "UpstreamPathTemplate": "/blitzer/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Nightfalls/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5030
+        }
+      ],
+      "UpstreamPathTemplate": "/nightfaller/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Quest/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5040
+        }
+      ],
+      "UpstreamPathTemplate": "/quester/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    }
+  ]
+}

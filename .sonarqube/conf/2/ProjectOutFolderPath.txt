@@ -1,0 +1,1 @@
+C:\Git\NFLBot\.sonarqube\out\2

@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet>NFLBot.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet>NFLBot.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="MadReflection.BungieApi\**" />
+    <Compile Remove="XurClassLibrary\**" />
+    <EmbeddedResource Remove="MadReflection.BungieApi\**" />
+    <EmbeddedResource Remove="XurClassLibrary\**" />
+    <None Remove="MadReflection.BungieApi\**" />
+    <None Remove="XurClassLibrary\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ConsoleTables" Version="2.3.0" />
+    <PackageReference Include="Discord.Net" Version="2.1.1" />
+    <PackageReference Include="Discord.Net.Commands" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="3.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.112" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MadReflection.BungieApi\MadReflection.BungieNetApi.Client\MadReflection.BungieNetApi.Client.csproj" />
+    <ProjectReference Include="..\MadReflection.BungieApi\MadReflection.BungieNetApi.Entities\MadReflection.BungieNetApi.Entities.csproj" />
+    <ProjectReference Include="..\XurClassLibrary\XurClassLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

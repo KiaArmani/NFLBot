@@ -1,0 +1,71 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xurmongobridgee-config
+data:
+  appsettings.json: |
+    {
+      "message": "xurmongobridge says: Hello!",
+
+      "info": {
+        "author": "Kia Armani"
+      }
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xurmongobridge
+  labels:
+    app: xurmongobridge
+spec:
+  type: NodePort
+  ports:
+  - port: 5000
+  selector:
+    app: xurmongobridge
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: xurmongobridge
+spec:
+  replicas: 2
+  minReadySeconds: 60
+  template:
+    metadata:
+      labels:
+        app: xurmongobridge
+    spec:
+      containers:
+      - name: xurmongobridge
+        image: "kiaarmani/xurmongobridge"
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000
+        livenessProbe:
+          httpGet:
+            path: /system/health
+            port: 5000
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /system/info
+            port: 5000
+          timeoutSeconds: 10
+        volumeMounts:
+        - name: xurmongobridge-config-volume
+          mountPath: /config
+          readOnly: true
+      volumes:
+      - name: xurmongobridge-config-volume
+        configMap:
+          name: xurmongobridge-config
