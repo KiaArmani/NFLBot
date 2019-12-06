@@ -1,9 +1,8 @@
-# NFLBot
+# XurSuite
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fd2tools%2FNFLBot.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FKiaArmani%2FNFLBot?ref=badge_shield)
-[![Build Status](https://travis-ci.org/d2tools/NFLBot.svg?branch=master)](https://travis-ci.org/d2tools/NFLBot)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fd2tools%2FNFLBot.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FKiaArmani%2FXurSuite?ref=badge_shield)
 
-A Discord Bot that collects Nightfall Activities of your Destiny Clan and providing commands for scoreboards.
+A collection of Microservices harvesting player activity data from a Clan in Destiny 2 and processing them to allow for custom challenges to be provided to clan members.
 
 ## Getting Started
 
@@ -11,31 +10,20 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-In order to run the Bot, you need to set the following Environment Variables and a MongoDB instance:
+In order to run any given service, you need to set the following Environment Variables and a MongoDB instance:
 
 ```
-NFLBOT_DISCORDTOKEN: API Token for the Discord Bot Application
-NFLBOT_BUNGIETOKEN: API Token for the Bungie Application
-NFLBOT_CLANID: ID of your Destiny Clan
-NFLBOT_MONGOSTRING: Connection String to connect to your MongoDB instance
+XUR_{SERVICENAME}_DISCORDTOKEN: API Token for the Discord Bot Application
+XUR_{SERVICENAME}_BUNGIETOKEN: API Token for the Bungie Application
+XUR_{SERVICENAME}_CLANID: ID of your Destiny Clan
+XUR_{SERVICENAME}_MONGOSTRING: Connection String to connect to your MongoDB instance
 ```
 
-You'll also need Visual Studio 2019 with .NET Core 2.2 installed in order to run the Bot from VS and develop for it.
+You'll also need Visual Studio 2019 with .NET Core 3.0 installed in order to run the Bot from VS and develop for it.
 
 ## Deployment
 
-Use the default "Publish" functionality from Visual Studio to create release binaries.
-
-## Commands
-
-The following Commands are available:
-
-* !nfl help - Shows a list of available commands
-* !nfl top {0} - Shows the overall top scores across all Ordeal Activities, {0} being the amount of results you want.
-* !nfl score {0} {ADEPT/HERO/MASTER/LEGEND} - Shows the Top10 of a given Nightfall. {0} being the Nightfall Name.
-* !nfl init - Requires Bot Owner. Resets the Score database.
-* !nfl load - Requires Bot Owner. Forces loading of new scores.
-* !nfl player {0} {1} {2} {ADEPT/HERO/MASTER/LEGEND} - Gets a players scores. {0} is the player name. {1} the amount of results. {2} the activity name. (Everything but the name is optional)
+Use the default "Publish" functionality from Visual Studio to create release binaries and / or publish a docker image.
 
 ## Built With
 
