@@ -6,13 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Consul" Version="1.6.1.1" />
+    <PackageReference Include="MadReflection.BungieNetApi.Client" Version="0.1.6" />
+    <PackageReference Include="MadReflection.BungieNetApi.Entities" Version="0.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="MongoDB.Bson" Version="2.10.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MadReflection.BungieApi\MadReflection.BungieNetApi.Entities\MadReflection.BungieNetApi.Entities.csproj" />
   </ItemGroup>
 
 </Project>

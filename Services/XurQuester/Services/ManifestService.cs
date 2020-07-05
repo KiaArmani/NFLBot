@@ -6,8 +6,10 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using BungieNet.Destiny;
+using BungieNet.Destiny.Definitions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using XurClassLibrary.Models;
 using static System.String;
 
@@ -109,7 +111,7 @@ namespace XurQuester.Services
                 return new ActivityDisplayProperties();
 
             // Bungie's naming scheme got inconsistent with Ordeals, so we have to do some string manipulation here to get proper results
-            var dad = DestinyActivityDefinition.FromJson(jsonString);
+            var dad = JsonConvert.DeserializeObject<DestinyActivityDefinition>(jsonString);
 
             var returnData = new ActivityDisplayProperties
             {
@@ -146,9 +148,8 @@ namespace XurQuester.Services
             if (IsNullOrEmpty(jsonString))
                 return TierType.Unknown;
 
-            var itemDefinition = DestinyInventoryItemDefinition.FromJson(jsonString);
-            if (itemDefinition.Inventory.TierType != null) return (TierType) itemDefinition.Inventory.TierType.Value;
-            return TierType.Unknown;
+            var itemDefinition = JsonConvert.DeserializeObject<DestinyInventoryItemDefinition>(jsonString);
+            return (TierType) itemDefinition.Inventory.TierType;
         }
 
         public string GetWeaponType(uint hash)
@@ -178,8 +179,8 @@ namespace XurQuester.Services
             if (IsNullOrEmpty(jsonString))
                 return null;
 
-            var itemDefinition = DestinyInventoryItemDefinition.FromJson(jsonString);
-            return itemDefinitio.ItemTypeDisplayName;
+            var itemDefinition = JsonConvert.DeserializeObject<DestinyInventoryItemDefinition>(jsonString);
+            return itemDefinition.ItemTypeDisplayName;
         }
     }
 }

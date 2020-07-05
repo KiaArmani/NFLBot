@@ -33,6 +33,9 @@ namespace XurCollector.Services
 
         public static async void GetActivityDataOfClan(object state)
         {
+            Console.WriteLine("Collection of Activity Data started.");
+
+            // Get Memberlist
             var clanMembers = await GetMembershipList();
 
             // Loop through Members
@@ -121,11 +124,9 @@ namespace XurCollector.Services
                 // Loop through Activities
                 foreach (var activity in allData.Activities)    
                 {
-                    if (activity.ActivityDetails.DirectorActivityHash != 4148187374)
-                        continue;
-
                     // If the Activity is before the start of the ranking period (usually a Season), skip the Score.
                         var activityDate = activity.Period;
+
                     if (activityDate < ChallengeGlobals.CurrentSeasonStart)
                         continue;
 

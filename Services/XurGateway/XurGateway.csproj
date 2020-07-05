@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MadReflection.BungieNetApi.Client" Version="0.1.6" />
+    <PackageReference Include="MadReflection.BungieNetApi.Entities" Version="0.1.6" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="Ocelot" Version="13.8.0" />
   </ItemGroup>
