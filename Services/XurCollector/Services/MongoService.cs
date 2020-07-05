@@ -2,40 +2,43 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
+using XurClassLibrary.Extensions;
 using XurClassLibrary.Models.Destiny;
 
 namespace XurCollector.Services
 {
-    public class MongoService
+    public static class MongoService
     {
-        private readonly ILogger<MongoService> _logger;
-        private IMongoCollection<NDestinyHistoricalStatsPeriodGroup> _activityCollection;
-        private MongoClient _mongoClient;
-
-        public MongoService(ILogger<MongoService> logger, IServiceProvider services)
-        {
-            _logger = logger;
-        }
+        private static IMongoCollection<NDestinyHistoricalStatsPeriodGroup> _activityCollection;
+        private static MongoClient _mongoClient;
 
         /// <summary>
         ///     Initializes Connection to the Cloud Atlas Database and receives all currently saved scores.
         /// </summary>
-        public void InitializeMongoDatabase()
+        public static void InitializeMongoDatabase()
         {
-            _logger.LogInformation("Initializing Cloud Atlas Connection..");
+            var alwaysAllowUInt32OverflowConvention = new AlwaysAllowUInt32OverflowConventionExtension();
+            var conventionPack = new ConventionPack
+            {
+                alwaysAllowUInt32OverflowConvention
+            };
+            ConventionRegistry.Register("AlwaysAllowUInt32Overflow", conventionPack, t => true);
+
+            Console.WriteLine("Initializing Cloud Atlas Connection..");
             var mongoConnectionString = Environment.GetEnvironmentVariable("XUR_COLLECTOR_MONGOSTRING");
             _mongoClient = new MongoClient(mongoConnectionString);
-            _logger.LogInformation("MongoDB Connection established!");
+            Console.WriteLine("MongoDB Connection established!");
 
-            _logger.LogInformation("Loading Collection..");
-            var database = _mongoClient.GetDatabase("d2tools");
+            Console.WriteLine("Loading Collection..");
+            var database = _mongoClient.GetDatabase("xur");
             _activityCollection = database.GetCollection<NDestinyHistoricalStatsPeriodGroup>("memberactivity");
 
-            _logger.LogInformation("Collection Loaded!");
+            Console.WriteLine("Collection Loaded!");
         }
 
-        public NDestinyHistoricalStatsPeriodGroup GetActivityByInstanceId(long instanceId)
+        public static NDestinyHistoricalStatsPeriodGroup GetActivityByInstanceId(long instanceId)
         {
             var mongodbResult = _activityCollection.Find(x => x.Data.ActivityDetails.InstanceId == instanceId);
             if (mongodbResult.Any())
@@ -43,12 +46,12 @@ namespace XurCollector.Services
             return null;
         }
 
-        public List<NDestinyHistoricalStatsPeriodGroup> GetAllActivities()
+        public static List<NDestinyHistoricalStatsPeriodGroup> GetAllActivities()
         {
             return _activityCollection.Find(x => true).ToList();
         }
 
-        public async Task AddNewActivities(List<NDestinyHistoricalStatsPeriodGroup> newActivityData)
+        public static async Task AddNewActivities(List<NDestinyHistoricalStatsPeriodGroup> newActivityData)
         {
             await _activityCollection.InsertManyAsync(newActivityData);
         }

@@ -8,14 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
-    <PackageReference Include="MongoDB.Driver" Version="2.9.2" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference
-      Include="..\..\Libraries\MadReflection.BungieApi\MadReflection.BungieNetApi.Entities\MadReflection.BungieNetApi.Entities.csproj" />
     <ProjectReference Include="..\..\Libraries\XurClassLibrary\XurClassLibrary.csproj" />
   </ItemGroup>
 

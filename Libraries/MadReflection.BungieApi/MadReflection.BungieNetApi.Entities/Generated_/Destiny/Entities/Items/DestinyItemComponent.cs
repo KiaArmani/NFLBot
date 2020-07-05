@@ -52,5 +52,17 @@ namespace BungieNet.Destiny.Entities.Items
 
 		[JsonProperty("isWrapper")]
 		public bool IsWrapper { get; set; }
+
+		[JsonProperty("tooltipNotificationIndexes")]
+		public int[] TooltipNotificationIndexes { get; set; }
+
+		[JsonProperty("metricHash")]
+		public uint? MetricHash { get; set; }
+
+		[JsonProperty("metricObjective")]
+		public Destiny.Quests.DestinyObjectiveProgress MetricObjective { get; set; }
+
+		[JsonProperty("versionNumber")]
+		public int? VersionNumber { get; set; }
 	}
 }

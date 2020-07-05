@@ -18,10 +18,10 @@ namespace BungieNet.Destiny.HistoricalStats
 	public partial class DestinyHistoricalStatsActivity
 	{
 		[JsonProperty("referenceId")]
-		public string ReferenceId { get; set; }
+		public uint ReferenceId { get; set; }
 
 		[JsonProperty("directorActivityHash")]
-		public string DirectorActivityHash { get; set; }
+		public uint DirectorActivityHash { get; set; }
 
 		[JsonProperty("instanceId")]
 		public long InstanceId { get; set; }

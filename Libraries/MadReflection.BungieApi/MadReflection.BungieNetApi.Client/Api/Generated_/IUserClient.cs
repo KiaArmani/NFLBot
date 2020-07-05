@@ -30,8 +30,8 @@ namespace BungieNet.Api
 		User.UserMembershipData GetMembershipDataForCurrentUser();
 		Task<User.UserMembershipData> GetMembershipDataForCurrentUserAsync();
 
-		Partnerships.PublicPartnershipDetail[] GetPartnerships(long membershipId);
-		Task<Partnerships.PublicPartnershipDetail[]> GetPartnershipsAsync(long membershipId);
+		User.HardLinkedUserMembership GetMembershipFromHardLinkedCredential(BungieCredentialType crType, string credential);
+		Task<User.HardLinkedUserMembership> GetMembershipFromHardLinkedCredentialAsync(BungieCredentialType crType, string credential);
 	}
 
 	partial interface IBungieClient
@@ -48,7 +48,7 @@ namespace BungieNet.Api
 		Task<User.GeneralUser> IUserClient.GetBungieNetUserByIdAsync(long id)
 		{
 			string[] pathSegments = new string[] { "User", "GetBungieNetUserById", id.ToString() };
-			Uri uri = GetEndpointUri(pathSegments, true, null);
+			Uri uri = GetEndpointUri(BungieEndpointBase.Default, pathSegments, true, null);
 			return GetEntityAsync<User.GeneralUser>(uri);
 		}
 
@@ -60,7 +60,7 @@ namespace BungieNet.Api
 			{
 				new QueryStringItem("q", (q ?? ""))
 			};
-			Uri uri = GetEndpointUri(pathSegments, true, queryItems);
+			Uri uri = GetEndpointUri(BungieEndpointBase.Default, pathSegments, true, queryItems);
 			return GetEntityArrayAsync<User.GeneralUser>(uri);
 		}
 
@@ -68,7 +68,7 @@ namespace BungieNet.Api
 		Task<Config.UserTheme[]> IUserClient.GetAvailableThemesAsync()
 		{
 			string[] pathSegments = new string[] { "User", "GetAvailableThemes" };
-			Uri uri = GetEndpointUri(pathSegments, true, null);
+			Uri uri = GetEndpointUri(BungieEndpointBase.Default, pathSegments, true, null);
 			return GetEntityArrayAsync<Config.UserTheme>(uri);
 		}
 
@@ -76,7 +76,7 @@ namespace BungieNet.Api
 		Task<User.UserMembershipData> IUserClient.GetMembershipDataByIdAsync(long membershipId, BungieMembershipType membershipType)
 		{
 			string[] pathSegments = new string[] { "User", "GetMembershipsById", membershipId.ToString(), ((int)membershipType).ToString() };
-			Uri uri = GetEndpointUri(pathSegments, true, null);
+			Uri uri = GetEndpointUri(BungieEndpointBase.Default, pathSegments, true, null);
 			return GetEntityAsync<User.UserMembershipData>(uri);
 		}
 
@@ -84,16 +84,18 @@ namespace BungieNet.Api
 		Task<User.UserMembershipData> IUserClient.GetMembershipDataForCurrentUserAsync()
 		{
 			string[] pathSegments = new string[] { "User", "GetMembershipsForCurrentUser" };
-			Uri uri = GetEndpointUri(pathSegments, true, null);
+			Uri uri = GetEndpointUri(BungieEndpointBase.Default, pathSegments, true, null);
 			return GetEntityAsync<User.UserMembershipData>(uri);
 		}
 
-		Partnerships.PublicPartnershipDetail[] IUserClient.GetPartnerships(long membershipId) => User.GetPartnershipsAsync(membershipId).GetAwaiter().GetResult();
-		Task<Partnerships.PublicPartnershipDetail[]> IUserClient.GetPartnershipsAsync(long membershipId)
+		User.HardLinkedUserMembership IUserClient.GetMembershipFromHardLinkedCredential(BungieCredentialType crType, string credential) => User.GetMembershipFromHardLinkedCredentialAsync(crType, credential).GetAwaiter().GetResult();
+		Task<User.HardLinkedUserMembership> IUserClient.GetMembershipFromHardLinkedCredentialAsync(BungieCredentialType crType, string credential)
 		{
-			string[] pathSegments = new string[] { "User", membershipId.ToString(), "Partnerships" };
-			Uri uri = GetEndpointUri(pathSegments, true, null);
-			return GetEntityArrayAsync<Partnerships.PublicPartnershipDetail>(uri);
+			if (credential is null)
+				throw new ArgumentNullException(nameof(credential));
+			string[] pathSegments = new string[] { "User", "GetMembershipFromHardLinkedCredential", ((byte)crType).ToString(), credential };
+			Uri uri = GetEndpointUri(BungieEndpointBase.Default, pathSegments, true, null);
+			return GetEntityAsync<User.HardLinkedUserMembership>(uri);
 		}
 	}
 }

@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BungieNet.Destiny.HistoricalStats;
 using BungieNet.Destiny.HistoricalStats.Definitions;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using XurClassLibrary.Models;
-using XurClassLibrary.Models.Destiny;
 
 namespace XurQuester.Services
 {
     public class MongoService
     {
         private readonly ILogger<MongoService> _logger;
-        private IMongoCollection<NDestinyHistoricalStatsPeriodGroup> _activityCollection;
+        private IMongoCollection<DestinyHistoricalStatsPeriodGroup> _activityCollection;
         private IMongoCollection<ChallengeEntry> _challengeCollection;
 
         public MongoService(ILogger<MongoService> logger, IServiceProvider services)
@@ -36,19 +36,19 @@ namespace XurQuester.Services
             _logger.LogInformation("Loading Collection..");
             var database = mongoClient.GetDatabase("d2tools");
 
-            _activityCollection = database.GetCollection<NDestinyHistoricalStatsPeriodGroup>("memberactivity");
+            _activityCollection = database.GetCollection<DestinyHistoricalStatsPeriodGroup>("memberactivity");
             _challengeCollection = database.GetCollection<ChallengeEntry>("confirmedchallenges");
 
             _logger.LogInformation("Collection Loaded!");
         }
 
-        public List<NDestinyHistoricalStatsPeriodGroup> GetCompletedActivitiesOfType(DestinyActivityModeType modeType)
+        public List<DestinyHistoricalStatsPeriodGroup> GetCompletedActivitiesOfType(DestinyActivityModeType modeType)
         {
             var completedActivities = _activityCollection.Find
             (
-                x => x.Data.ActivityDetails.Mode.Equals(modeType)
-                     && x.Data.Values["completionReason"].Basic.DisplayValue.Equals("Objective Completed")
-                     && x.Data.Period >= ChallengeGlobals.CurrentChallengeWeek
+                x => x.ActivityDetails.Mode.Equals(modeType)
+                     && x.Values["completionReason"].Basic.DisplayValue.Equals("Objective Completed")
+                     && x.Period >= ChallengeGlobals.CurrentChallengeWeek
             );
 
             return completedActivities.ToList();

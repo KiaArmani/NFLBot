@@ -81,7 +81,7 @@ namespace XurQuester.Services
 
             foreach (var completedActivity in completedActivitiesOfType)
             {
-                var pcgr = await _bungieService.GetPostCarnageReport(completedActivity.Data.ActivityDetails
+                var pcgr = await _bungieService.GetPostCarnageReport(completedActivity.ActivityDetails
                     .InstanceId);
 
                 if (pcgr?.Entries == null)
@@ -110,7 +110,7 @@ namespace XurQuester.Services
                     var newEntry = new ChallengeEntry(
                         playerEntry.Player.DestinyUserInfo.DisplayName,
                         membershipId,
-                        completedActivity.Data.ActivityDetails.InstanceId.ToString(),
+                        completedActivity.ActivityDetails.InstanceId.ToString(),
                         ChallengeGlobals.Tier1Normal);
 
                     await _mongoService.AddFinishedChallenge(newEntry);
@@ -136,7 +136,7 @@ namespace XurQuester.Services
 
             foreach (var completedVexOffensive in completedVexOffensives)
             {
-                var pcgr = await _bungieService.GetPostCarnageReport(completedVexOffensive.Data.ActivityDetails
+                var pcgr = await _bungieService.GetPostCarnageReport(completedVexOffensive.ActivityDetails
                     .InstanceId);
 
                 if (pcgr?.Entries == null)
@@ -162,7 +162,7 @@ namespace XurQuester.Services
                             var newEntry = new ChallengeEntry(
                                 playerEntry.Player.DestinyUserInfo.DisplayName,
                                 membershipId,
-                                completedVexOffensive.Data.ActivityDetails.InstanceId.ToString(),
+                                completedVexOffensive.ActivityDetails.InstanceId.ToString(),
                                 ChallengeGlobals.Tier1Normal);
 
                             await _mongoService.AddFinishedChallenge(newEntry);
@@ -190,7 +190,7 @@ namespace XurQuester.Services
                         var newEntry = new ChallengeEntry(
                             playerEntry.Player.DestinyUserInfo.DisplayName,
                             membershipId,
-                            completedVexOffensive.Data.ActivityDetails.InstanceId.ToString(),
+                            completedVexOffensive.ActivityDetails.InstanceId.ToString(),
                             ChallengeGlobals.Tier1Heroic);
 
                         await _mongoService.AddFinishedChallenge(newEntry);
@@ -217,7 +217,7 @@ namespace XurQuester.Services
             foreach (var completedActivity in completedActivitiesOfType)
             {
                 // Get PCGR
-                var pcgr = await _bungieService.GetPostCarnageReport(completedActivity.Data.ActivityDetails
+                var pcgr = await _bungieService.GetPostCarnageReport(completedActivity.ActivityDetails
                     .InstanceId);
 
                 // Skip if no response
@@ -225,7 +225,7 @@ namespace XurQuester.Services
                     continue;
 
                 // If it's not Zero Hour, skip
-                if (pcgr.ActivityDetails.DirectorActivityHash != "3232506937")
+                if (pcgr.ActivityDetails.DirectorActivityHash != 3232506937)
                     continue;
 
                 // If there are not two players, skip
@@ -265,7 +265,7 @@ namespace XurQuester.Services
                     var newEntry = new ChallengeEntry(
                         playerEntry.Player.DestinyUserInfo.DisplayName,
                         playerEntry.CharacterId,
-                        completedActivity.Data.ActivityDetails.InstanceId.ToString(),
+                        completedActivity.ActivityDetails.InstanceId.ToString(),
                         ChallengeGlobals.Tier2Normal);
 
                     await _mongoService.AddFinishedChallenge(newEntry);
@@ -296,7 +296,7 @@ namespace XurQuester.Services
 
             foreach (var completedNightfall in completedNightfalls)
             {
-                var pcgr = await _bungieService.GetPostCarnageReport(completedNightfall.Data.ActivityDetails
+                var pcgr = await _bungieService.GetPostCarnageReport(completedNightfall.ActivityDetails
                     .InstanceId);
 
                 if (pcgr?.Entries == null)
@@ -350,7 +350,7 @@ namespace XurQuester.Services
                     var newEntry = new ChallengeEntry(
                         playerEntry.Player.DestinyUserInfo.DisplayName,
                         membershipId,
-                        completedNightfall.Data.ActivityDetails.InstanceId.ToString(),
+                        completedNightfall.ActivityDetails.InstanceId.ToString(),
                         ChallengeGlobals.Tier2Heroic);
 
                     await _mongoService.AddFinishedChallenge(newEntry);
@@ -370,13 +370,13 @@ namespace XurQuester.Services
         {
             // Check Challenge 3
             // Complete the Spire of Stars Raid having one Player never die and dealing no damage.
-            WriteLog(LogSeverity.Info, "Checking Activities for Tier 3 Normal..");
+            _logger.LogInformation( "Checking Activities for Tier 3 Normal..");
             var completedRaids = _mongoService.GetCompletedActivitiesOfType(DestinyActivityModeType.Raid);
 
             foreach (var completedRaid in completedRaids)
             { 
                 // Get PCGR
-                var pcgr = await _bungieService.GetPostCarnageReport(completedRaid.Data.ActivityDetails
+                var pcgr = await _bungieService.GetPostCarnageReport(completedRaid.ActivityDetails
                     .InstanceId);
 
                 // If no data was returned, skip
@@ -424,7 +424,7 @@ namespace XurQuester.Services
                     var newEntry = new ChallengeEntry(
                         playerEntry.Player.DestinyUserInfo.DisplayName,
                         membershipId,
-                        completedRaid.Data.ActivityDetails.InstanceId.ToString(),
+                        completedRaid.ActivityDetails.InstanceId.ToString(),
                         ChallengeGlobals.Tier3Normal);
 
                     await _mongoService.AddFinishedChallenge(newEntry);
@@ -444,16 +444,16 @@ namespace XurQuester.Services
         {
             // Check Challenge 3
             // Complete the Scourge of the Past Raid using Blue Weapons & Armor and a 150 Speed Sparrow, having each Character Class only twice in the Fireteam. 
-            string[] validRaids = {"548750096", "2812525063"};
+            var validRaids = new List<uint>{548750096, 2812525063};
             _logger.LogInformation("Checking Activities for Tier 3 Heroic..");
             var completedRaids = _mongoService.GetCompletedActivitiesOfType(DestinyActivityModeType.Raid);
 
             foreach (var completedRaid in completedRaids)
             {
-                if (!validRaids.Contains(completedRaid.Data.ActivityDetails.DirectorActivityHash))
+                if (!validRaids.Contains(completedRaid.ActivityDetails.DirectorActivityHash))
                     continue;
 
-                var pcgr = await _bungieService.GetPostCarnageReport(completedRaid.Data.ActivityDetails
+                var pcgr = await _bungieService.GetPostCarnageReport(completedRaid.ActivityDetails
                     .InstanceId);
 
                 if (pcgr?.Entries == null)
@@ -511,7 +511,7 @@ namespace XurQuester.Services
                         var newEntry = new ChallengeEntry(
                             playerEntry.Player.DestinyUserInfo.DisplayName,
                             membershipId,
-                            completedRaid.Data.ActivityDetails.InstanceId.ToString(),
+                            completedRaid.ActivityDetails.InstanceId.ToString(),
                             ChallengeGlobals.Tier3Heroic);
 
                         await _mongoService.AddFinishedChallenge(newEntry);

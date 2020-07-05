@@ -2,14 +2,14 @@
 
 namespace BungieNet.Destiny.Definitions
 {
-    partial class DestinyEquippingBlockDefinition
-    {
-        [Undocumented]
-        [JsonProperty("equippingSoundHash")]
-        public uint EquippingSoundHash { get; set; }
+	partial class DestinyEquippingBlockDefinition
+	{
+		[Undocumented]
+		[JsonProperty("equippingSoundHash")]
+		public uint EquippingSoundHash { get; set; }
 
-        [Undocumented]
-        [JsonProperty("hornSoundHash")]
-        public uint HornSoundHash { get; set; }
-    }
+		[Undocumented]
+		[JsonProperty("hornSoundHash")]
+		public uint HornSoundHash { get; set; }
+	}
 }

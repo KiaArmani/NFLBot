@@ -1,5 +1,5 @@
-﻿using System;
-using BungieNet.Destiny.HistoricalStats.Definitions;
+﻿using BungieNet.Destiny.HistoricalStats.Definitions;
+using System;
 
 namespace XurClassLibrary.Models
 {

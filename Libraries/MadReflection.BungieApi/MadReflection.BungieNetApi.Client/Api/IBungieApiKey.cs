@@ -1,7 +1,7 @@
 ﻿namespace BungieNet.Api
 {
-    public interface IBungieApiKey
-    {
-        string Value { get; }
-    }
+	public interface IBungieApiKey
+	{
+		string Value { get; }
+	}
 }

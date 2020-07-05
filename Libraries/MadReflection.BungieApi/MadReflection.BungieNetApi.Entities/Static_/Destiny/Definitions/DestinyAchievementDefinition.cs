@@ -3,13 +3,15 @@ using Newtonsoft.Json;
 
 namespace BungieNet.Destiny.Definitions
 {
-    public class DestinyAchievementDefinition : DestinyDefinition
-    {
-        [JsonProperty("displayProperties")] public DestinyDisplayPropertiesDefinition DisplayProperties { get; set; }
+	public class DestinyAchievementDefinition : DestinyDefinition
+	{
+		[JsonProperty("displayProperties")]
+		public DestinyDisplayPropertiesDefinition DisplayProperties { get; set; }
 
-        [JsonProperty("acccumulatorThreshold")]
-        public int AccumulatorThreshold { get; set; } // The JSON property is misspelled.
+		[JsonProperty("acccumulatorThreshold")]
+		public int AccumulatorThreshold { get; set; }  // The JSON property is misspelled.
 
-        [JsonProperty("platformIndex")] public int PlatformIndex { get; set; }
-    }
+		[JsonProperty("platformIndex")]
+		public int PlatformIndex { get; set; }
+	}
 }

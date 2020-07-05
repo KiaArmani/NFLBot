@@ -3,265 +3,268 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using BungieNet.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace BungieNet.Api
 {
-    public abstract class BungieClientBase
-    {
-        private readonly string _apiKey;
-        private string _bearerToken;
+	public abstract class BungieClientBase
+	{
+		private readonly HttpClient _httpClient;
+		private readonly string _apiKey;
+		private string _bearerToken;
 
 
-        private protected BungieClientBase(IBungieApiKey apiKey)
-        {
-            if (apiKey == null)
-                throw new ArgumentNullException(nameof(apiKey));
-            if (apiKey.Value == "")
-                throw new ArgumentException("API key value cannot be an empty string.",
-                    nameof(apiKey) + "." + nameof(apiKey.Value));
+		private protected BungieClientBase(IBungieApiKey apiKey)
+		{
+			if (apiKey == null)
+				throw new ArgumentNullException(nameof(apiKey));
+			if (apiKey.Value == "")
+				throw new ArgumentException("API key value cannot be an empty string.", nameof(apiKey) + "." + nameof(apiKey.Value));
 
-            _apiKey = apiKey.Value;
-        }
-
-
-        public void SetBearerToken(string bearerToken)
-        {
-            if (bearerToken == null)
-                throw new ArgumentNullException(nameof(bearerToken));
-            if (string.IsNullOrEmpty(bearerToken))
-                throw new ArgumentException("Bearer token cannot be an empty string.", nameof(bearerToken));
-
-            _bearerToken = bearerToken;
-        }
-
-        public void ClearBearerToken()
-        {
-            _bearerToken = null;
-        }
-
-        private HttpClient GetHttpClient()
-        {
-            var handler = new HttpClientHandler
-            {
-                AllowAutoRedirect = true
-            };
-
-            var client = new HttpClient(handler);
-            client.DefaultRequestHeaders.Add("Accept", "text/json");
-            if (_bearerToken != null)
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
-            client.DefaultRequestHeaders.Add("X-API-Key", _apiKey);
-            return client;
-        }
-
-        private async Task<string> GetResourceAsync(Uri uri)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+			_httpClient = new HttpClient();
+			_apiKey = apiKey.Value;
+		}
 
 
-            using (var client = GetHttpClient())
-            {
-                var response = await client.GetAsync(uri.ToString());
+		public void SetBearerToken(string bearerToken)
+		{
+			if (bearerToken == null)
+				throw new ArgumentNullException(nameof(bearerToken));
+			if (string.IsNullOrEmpty(bearerToken))
+				throw new ArgumentException("Bearer token cannot be an empty string.", nameof(bearerToken));
 
-                return await response.Content.ReadAsStringAsync();
-            }
-        }
+			_bearerToken = bearerToken;
+		}
 
-        internal Uri GetEndpointUri(string[] pathSegments, bool includeTrailingSlash,
-            IEnumerable<QueryStringItem> queryStringItems = null, bool d1 = false, bool stats = false)
-        {
-            if (pathSegments == null)
-                throw new ArgumentNullException(nameof(pathSegments));
-            if (pathSegments.Length == 0)
-                throw new ArgumentException("No endpoint path.");
+		public void ClearBearerToken()
+		{
+			_bearerToken = null;
+		}
 
-            foreach (var pathSegment in pathSegments)
-            {
-                if (pathSegment == null)
-                    throw new ArgumentNullException(nameof(pathSegment), "Array elements cannot be null.");
-                if (pathSegments.Length == 0)
-                    throw new ArgumentException("Array element is empty.", nameof(pathSegments));
-            }
+		internal Uri GetEndpointUri(BungieEndpointBase endpointBase, string[] pathSegments, bool includeTrailingSlash, IEnumerable<QueryStringItem> queryStringItems = null)
+		{
+			if (pathSegments == null)
+				throw new ArgumentNullException(nameof(pathSegments));
+			if (pathSegments.Length == 0)
+				throw new ArgumentException("No endpoint path.");
 
-            var url = d1 ? Constants.BaseUriD1 : Constants.BaseUri;
-            if (url == Constants.BaseUri && stats)
-                url = Constants.BaseUriStats;
+			foreach (string pathSegment in pathSegments)
+			{
+				if (pathSegment == null)
+					throw new ArgumentNullException(nameof(pathSegment), "Array elements cannot be null.");
+				if (pathSegments.Length == 0)
+					throw new ArgumentException("Array element is empty.", nameof(pathSegments));
+			}
 
-            var builder = new UriBuilder(url);
+			UriBuilder builder = new UriBuilder(
+				endpointBase switch
+				{
+					BungieEndpointBase.Destiny1 => Constants.BaseUriD1,
+					BungieEndpointBase.Stats => Constants.BaseUriStats,
+					_ => Constants.BaseUri
+				});
 
-            builder.Path += string.Join("/", pathSegments);
-            if (includeTrailingSlash)
-                builder.Path += "/";
+			builder.Path += string.Join("/", pathSegments);
+			if (includeTrailingSlash)
+				builder.Path += "/";
 
-            if (queryStringItems != null && queryStringItems.Any())
-            {
-                var queryString = new StringBuilder();
+			if (queryStringItems != null && queryStringItems.Any())
+			{
+				StringBuilder queryString = new StringBuilder();
 
-                foreach (var queryStringItem in queryStringItems)
-                    queryString.Append(WebUtility.UrlEncode(queryStringItem.Name)).Append('=')
-                        .Append(WebUtility.UrlEncode(queryStringItem.Value)).Append("&");
+				foreach (QueryStringItem queryStringItem in queryStringItems)
+					queryString.Append(WebUtility.UrlEncode(queryStringItem.Name)).Append('=').Append(WebUtility.UrlEncode(queryStringItem.Value)).Append("&");
 
-                if (queryString.Length > 0 && queryString[queryString.Length - 1] == '&')
-                    queryString.Length--;
+				if (queryString.Length > 0 && queryString[queryString.Length - 1] == '&')
+					queryString.Length--;
 
-                builder.Query = queryString.ToString();
-            }
+				builder.Query = queryString.ToString();
+			}
 
-            return builder.Uri;
-        }
+			return builder.Uri;
+		}
 
-        private Task<string> PostResourceAsync(Uri uri)
-        {
-            return PostResourceAsync(uri, "");
-        }
+		private HttpRequestMessage CreateRequestMessage(Uri uri, HttpMethod method, HttpContent content)
+		{
+			HttpRequestMessage request = new HttpRequestMessage()
+			{
+				Method = method,
+				Headers =
+				{
+					{ "Accept", "text/json" },
+					{ "X-API-Key", _apiKey }
+				},
+				RequestUri = uri,
+				Content = content
+			};
 
-        private async Task<string> PostResourceAsync(Uri uri, string postBody)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+			if (_bearerToken is object)
+				request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _bearerToken);
 
-            var request = new StringContent(postBody);
+			return request;
+		}
 
-            using (var client = GetHttpClient())
-            {
-                var response = await client.PostAsync(uri.ToString(), request);
+		private async Task<string> GetResourceAsync(Uri uri)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
 
-                return await response.Content.ReadAsStringAsync();
-            }
-        }
+			HttpRequestMessage request = CreateRequestMessage(uri, HttpMethod.Get, null);
 
-        private async Task<JToken> GetObjectAsync(Uri uri)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+			HttpResponseMessage response = await _httpClient.SendAsync(request);
 
-            var response = await GetResourceAsync(uri);
+			if (response.StatusCode.IsRedirectCode())
+			{
+				request = CreateRequestMessage(response.Headers.Location, HttpMethod.Get, null);
+				response = await _httpClient.SendAsync(request);
+			}
 
-            try
-            {
-                var jObject = JObject.Parse(response);
-                var errorCode = (int) jObject["ErrorCode"];
-                if (errorCode != 1)
-                    throw new BungieException((PlatformErrorCodes) errorCode, (string) jObject["ErrorStatus"],
-                        (string) jObject["Message"], jObject["MessageData"]);
+			if (response.StatusCode.IsRedirectCode())
+				throw new BungieClientException("Multiple redirects detected.");
 
-                return jObject["Response"];
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
+			return await response.Content.ReadAsStringAsync();
+		}
 
-        private async Task<JToken> PostObjectAsync(Uri uri)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+		private async Task<string> PostResourceAsync(Uri uri, string postBody)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
 
-            var response = await PostResourceAsync(uri);
+			StringContent content = new StringContent(postBody);
 
-            var jObject = JObject.Parse(response);
+			HttpRequestMessage request = CreateRequestMessage(uri, HttpMethod.Post, content);
 
-            var errorCode = (int) jObject["ErrorCode"];
-            if (errorCode != 1)
-                throw new BungieException((PlatformErrorCodes) errorCode, (string) jObject["ErrorStatus"],
-                    (string) jObject["Message"], jObject["MessageData"]);
+			HttpResponseMessage response = await _httpClient.SendAsync(request);
 
-            return jObject["Response"];
-        }
+			if (response.StatusCode.IsRedirectCode())
+			{
+				request = CreateRequestMessage(response.Headers.Location, HttpMethod.Post, content);
+				response = await _httpClient.SendAsync(request);
+			}
 
-        private async Task<JToken> PostObjectAsync(Uri uri, JToken inputObject)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+			if (response.StatusCode.IsRedirectCode())
+				throw new BungieClientException("Multiple redirects detected.");
 
-            var request = inputObject.ToString(Formatting.None);
+			return await response.Content.ReadAsStringAsync();
+		}
 
-            var response = await PostResourceAsync(uri, request);
+		private async Task<JToken> GetObjectAsync(Uri uri)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
 
-            var jObject = JObject.Parse(response);
+			string response = await GetResourceAsync(uri);
 
-            var errorCode = (int) jObject["ErrorCode"];
-            if (errorCode != 1)
-                throw new BungieException((PlatformErrorCodes) errorCode, (string) jObject["ErrorStatus"],
-                    (string) jObject["Message"], jObject["MessageData"]);
+			JObject jObject = JObject.Parse(response);
 
-            return jObject["Response"];
-        }
+			int errorCode = (int)jObject["ErrorCode"];
+			if (errorCode != 1)
+				throw new BungieException((Exceptions.PlatformErrorCodes)errorCode, (string)jObject["ErrorStatus"], (string)jObject["Message"], jObject["MessageData"]);
 
-        protected async Task<TOutput> GetEntityAsync<TOutput>(Uri uri)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+			return jObject["Response"];
+		}
 
-            var response = (JObject) await GetObjectAsync(uri);
-            if (response is null)
-                return default;
+		private async Task<JToken> PostObjectAsync(Uri uri)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
 
-            return response.ToObject<TOutput>();
-        }
+			string response = await PostResourceAsync(uri, "");
 
-        protected async Task<TOutput> PostEntityAsync<TOutput>(Uri uri)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+			JObject jObject = JObject.Parse(response);
 
-            var response = (JObject) await PostObjectAsync(uri);
+			int errorCode = (int)jObject["ErrorCode"];
+			if (errorCode != 1)
+				throw new BungieException((Exceptions.PlatformErrorCodes)errorCode, (string)jObject["ErrorStatus"], (string)jObject["Message"], jObject["MessageData"]);
 
-            return response.ToObject<TOutput>();
-        }
+			return jObject["Response"];
+		}
 
-        protected async Task<TOutput> PostEntityAsync<TInput, TOutput>(Uri uri, TInput inputObject)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+		private async Task<JToken> PostObjectAsync(Uri uri, JToken inputObject)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
 
-            JToken request = JsonConvert.SerializeObject(inputObject, Formatting.None);
+			string request = inputObject.ToString(Formatting.None);
 
-            var response = (JObject) await PostObjectAsync(uri, request);
+			string response = await PostResourceAsync(uri, request);
 
-            return response.ToObject<TOutput>();
-        }
+			JObject jObject = JObject.Parse(response);
 
-        protected async Task<TOutput[]> GetEntityArrayAsync<TOutput>(Uri uri)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+			int errorCode = (int)jObject["ErrorCode"];
+			if (errorCode != 1)
+				throw new BungieException((Exceptions.PlatformErrorCodes)errorCode, (string)jObject["ErrorStatus"], (string)jObject["Message"], jObject["MessageData"]);
 
-            var response = (JArray) await GetObjectAsync(uri);
-            if (response is null)
-                return default;
+			return jObject["Response"];
+		}
 
-            return response.ToObject<TOutput[]>();
-        }
+		protected async Task<TOutput> GetEntityAsync<TOutput>(Uri uri)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
 
-        protected async Task<TOutput[]> PostEntityArrayAsync<TOutput>(Uri uri)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+			JObject response = (JObject)await GetObjectAsync(uri);
+			if (response is null)
+				return default;
 
-            var response = (JArray) await PostObjectAsync(uri);
+			return response.ToObject<TOutput>();
+		}
 
-            return response.ToObject<TOutput[]>();
-        }
+		protected async Task<TOutput> PostEntityAsync<TOutput>(Uri uri)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
 
-        protected async Task<TOutput[]> PostEntityArrayAsync<TInput, TOutput>(Uri uri, TInput inputObject)
-        {
-            if (uri == null)
-                throw new ArgumentNullException(nameof(uri));
+			JObject response = (JObject)await PostObjectAsync(uri);
 
-            JToken request = JsonConvert.SerializeObject(inputObject, Formatting.None);
+			return response.ToObject<TOutput>();
+		}
 
-            var response = (JArray) await PostObjectAsync(uri, request);
+		protected async Task<TOutput> PostEntityAsync<TInput, TOutput>(Uri uri, TInput inputObject)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
 
-            return response.ToObject<TOutput[]>();
-        }
-    }
+			JToken request = JsonConvert.SerializeObject(inputObject, Formatting.None);
+
+			JObject response = (JObject)await PostObjectAsync(uri, request);
+
+			return response.ToObject<TOutput>();
+		}
+
+		protected async Task<TOutput[]> GetEntityArrayAsync<TOutput>(Uri uri)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
+
+			JArray response = (JArray)await GetObjectAsync(uri);
+
+			return response.ToObject<TOutput[]>();
+		}
+
+		protected async Task<TOutput[]> PostEntityArrayAsync<TOutput>(Uri uri)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
+
+			JArray response = (JArray)await PostObjectAsync(uri);
+
+			return response.ToObject<TOutput[]>();
+		}
+
+		protected async Task<TOutput[]> PostEntityArrayAsync<TInput, TOutput>(Uri uri, TInput inputObject)
+		{
+			if (uri == null)
+				throw new ArgumentNullException(nameof(uri));
+
+			JToken request = JsonConvert.SerializeObject(inputObject, Formatting.None);
+
+			JArray response = (JArray)await PostObjectAsync(uri, request);
+
+			return response.ToObject<TOutput[]>();
+		}
+	}
 }

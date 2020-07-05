@@ -3,8 +3,9 @@ using Newtonsoft.Json;
 
 namespace BungieNet.Destiny.Definitions
 {
-    public class DestinyEnemyRaceDefinition : DestinyDefinition
-    {
-        [JsonProperty("displayProperties")] public DestinyDisplayPropertiesDefinition DisplayProperties { get; set; }
-    }
+	public class DestinyEnemyRaceDefinition : DestinyDefinition
+	{
+		[JsonProperty("displayProperties")]
+		public DestinyDisplayPropertiesDefinition DisplayProperties { get; set; }
+	}
 }

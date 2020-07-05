@@ -7,14 +7,14 @@ namespace XurClassLibrary.Models
     public static class ChallengeGlobals
     {
         // Current Week
-        public const long CurrentWeek = 2;
+        public const long CurrentWeek = 1;
 
         // Dates
         public static readonly DateTime CurrentSeasonStart =
-            Convert.ToDateTime("2019-11-01T18:00:00Z", CultureInfo.InvariantCulture);
+            Convert.ToDateTime("2020-06-09T18:00:00Z", CultureInfo.InvariantCulture);
 
         public static readonly DateTime CurrentChallengeWeek =
-            Convert.ToDateTime("2019-11-19T18:00:00Z", CultureInfo.InvariantCulture);
+            Convert.ToDateTime("2020-06-09T18:00:00Z", CultureInfo.InvariantCulture);
 
         // Quests
         public static readonly WeeklyChallengeDatabase Tier1Normal =

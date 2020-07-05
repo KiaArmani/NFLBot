@@ -2,10 +2,10 @@
 
 namespace BungieNet.Destiny.Definitions
 {
-    partial class DestinyItemInventoryBlockDefinition
-    {
-        [Undocumented]
-        [JsonProperty("nonTransferrableOriginal")]
-        public bool NonTransferrableOriginal { get; set; }
-    }
+	partial class DestinyItemInventoryBlockDefinition
+	{
+		[Undocumented]
+		[JsonProperty("nonTransferrableOriginal")]
+		public bool NonTransferrableOriginal { get; set; }
+	}
 }

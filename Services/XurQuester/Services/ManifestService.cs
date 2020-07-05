@@ -9,8 +9,6 @@ using BungieNet.Destiny;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using XurClassLibrary.Models;
-using XurClassLibrary.Models.Destiny.NDestinyActivityDefinition;
-using XurClassLibrary.Models.NDestinyInventoryItemDefinition;
 using static System.String;
 
 namespace XurQuester.Services
@@ -111,7 +109,7 @@ namespace XurQuester.Services
                 return new ActivityDisplayProperties();
 
             // Bungie's naming scheme got inconsistent with Ordeals, so we have to do some string manipulation here to get proper results
-            var dad = NDestinyActivityDefinition.FromJson(jsonString);
+            var dad = DestinyActivityDefinition.FromJson(jsonString);
 
             var returnData = new ActivityDisplayProperties
             {
@@ -148,7 +146,7 @@ namespace XurQuester.Services
             if (IsNullOrEmpty(jsonString))
                 return TierType.Unknown;
 
-            var itemDefinition = NDestinyInventoryItemDefinition.FromJson(jsonString);
+            var itemDefinition = DestinyInventoryItemDefinition.FromJson(jsonString);
             if (itemDefinition.Inventory.TierType != null) return (TierType) itemDefinition.Inventory.TierType.Value;
             return TierType.Unknown;
         }
@@ -180,8 +178,8 @@ namespace XurQuester.Services
             if (IsNullOrEmpty(jsonString))
                 return null;
 
-            var itemDefinition = NDestinyInventoryItemDefinition.FromJson(jsonString);
-            return itemDefinition.ItemTypeDisplayName;
+            var itemDefinition = DestinyInventoryItemDefinition.FromJson(jsonString);
+            return itemDefinitio.ItemTypeDisplayName;
         }
     }
 }
